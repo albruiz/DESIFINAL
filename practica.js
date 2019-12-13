@@ -72,6 +72,56 @@ function limit(data){
   return maxValue;
 }
 
+// <svg width="120" height="120"
+//      viewBox="0 0 120 120"
+//      xmlns="http://www.w3.org/2000/svg">
+//
+//   <rect x="10" y="10" width="100" height="100"/>
+// </svg>
+
+//lo dibuja ahora toca darle el tamano esperado y hacer que cree todos los que tiene que crear la mierda esta
+function letsee(){
+  var bodySelection = d3.select("body");
+
+  var svgSelection = bodySelection.append("svg")
+                                  .attr("width", 120)
+                                  .attr("height", 120);
+
+  var rectSection = svgSelection.append("rect")
+                                  .attr("x", 10)
+                                  .attr("y", 10)
+                                  .attr("width", 100)
+                                  .attr("height", 100);
+}
+// const SVG_NS = 'http://www.w3.org/2000/svg';
+
+// function createCubos(){
+//
+//   var o = {
+//     x : 100,
+//     y : 100,
+//     width : 50,
+//     height : 250
+//   }
+//   return o;
+// }
+//
+//   // dibuja un rectángulo rojo alrededor del gato
+//
+//
+// function drawRect(o, parent) {
+//   var rect = document.createElementNS(SVG_NS, 'rect');
+//   for (var name in o) {
+//     if (o.hasOwnProperty(name)) {
+//       rect.setAttributeNS(null, name, o[name]);
+//     }
+//   }
+//   console.log(parent, "     ", rect)
+//   var loko = parent.appendChild(rect);
+//   return loko;
+// }
+
+
 
 // function readCSV(name, country, year){
 //   d3.csv(name, function(data){
@@ -96,7 +146,17 @@ d3.csv(name, function(data){
   drawAxes(width, height, max, dataQuantity)
 
   console.log('lokokokokokok', dataQuantity);
+  letsee()
+  // drawRect(createCubos(), 'svg');
 }) ;
+
+
+
+
+
+
+
+
 // console.log(coso, 'loke');
 // var dataQuantity = readCSV(name, country, year);
 //
