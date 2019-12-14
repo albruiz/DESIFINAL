@@ -7,9 +7,12 @@
 //this fuction creates the axes
 function drawAxes(width, height, maxVal, dataQuantity){
   var minVal = 0;
-  var width = 1000, height = 1000;
   var dataYears = [ "  ", "0-9", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79", "80-89", "90-99", "100+"];
-  var dataQuantity = [ 0, 5, 7, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150];
+  var limit = parseInt(maxVal / 10) + 3
+  var vectorValores = Array (limit);
+  for (i = 0; i< limit; i++){
+    vectorValores[i] = i*10;
+  }
 // dataQuantity is set just for trying, but later, the data is needed to be taken from 'datos.csv'
   var svg = d3.select("body")
       .append("svg")
@@ -21,7 +24,7 @@ function drawAxes(width, height, maxVal, dataQuantity){
         .range([0, width - 100])
 
   var yscale = d3.scalePoint()
-          .domain(dataQuantity)
+          .domain(vectorValores)
           .range([height/2, 0]);
 
   var x_axis = d3.axisBottom()
@@ -40,12 +43,13 @@ function drawAxes(width, height, maxVal, dataQuantity){
               .attr("transform", "translate(50, " + xAxisTranslate  +")")
               .call(x_axis)
 
+return limit;
 }
 
 //returns Array with the data that needs to be represented
 function doSometringwithdata(coso, country, year){
   var vectorDatos = new Array(11);
-  for (i = 0; i< coso.length; i++){
+  for (i = 0; i < coso.length; i++){
     if((coso[i].Country == country) && (coso[i].Year == year)){
       vectorDatos[0] = parseInt(coso[i].Part0, 10);
       vectorDatos[1] = parseInt(coso[i].Part1, 10);
@@ -80,56 +84,24 @@ function limit(data){
 // </svg>
 
 //lo dibuja ahora toca darle el tamano esperado y hacer que cree todos los que tiene que crear la mierda esta
-function letsee(){
-  var bodySelection = d3.select("body");
+//Function that creates the rect, paarameters posX, posY, rectHei, rectWid are the parameters you have to declare for an SVG rect.
+//posX, posY, rectHei, rectWid
+function letsee(posX, valorY, numDiv){
 
-  var svgSelection = bodySelection.append("svg")
-                                  .attr("width", 120)
-                                  .attr("height", 120);
-
-  var rectSection = svgSelection.append("rect")
-                                  .attr("x", 10)
-                                  .attr("y", 10)
-                                  .attr("width", 100)
-                                  .attr("height", 100);
+  var bodySelection = d3.select("body").select("svg") ;
+  // var galego = bodySelection.select("g").select("g").class;
+   // var intermedia = bodySelection.select("g").select("g").getAttribute("transform");
+   // console.log(galego, "o te amo pequeno saltamonts :DDD ");
+  var valY = (500.5 / numDiv) * (valorY / 10) ;
+  console.log(valY, "    ", numDiv, "   ", valorY);
+  var posY = 510.033 - valY //la referencia la hemos tomado tomando el valor de 20, por lo que las medidas seran sobre esa medida inicial
+  var rectSection = bodySelection.append("rect")
+                                  .attr("x", posX)
+                                  .attr("y", posY) //perfecto <3 400 es la altura perfecta con 110 de longitud del rect, en caso de que aumente hay que reducir la y proporcionalmente.407,3934 NO CAMBIA ES LA ALTURA DE LAS BARRAS
+                                  .attr("width", 40) //este no cambia es el ancho
+                                  .attr("height", valY); //210  513.033/numero de divisiones 0-100 = 10 divisiones de 10 en 10, SI el valor es 20, pues (20/10) * valo obtenido.
 }
-// const SVG_NS = 'http://www.w3.org/2000/svg';
 
-// function createCubos(){
-//
-//   var o = {
-//     x : 100,
-//     y : 100,
-//     width : 50,
-//     height : 250
-//   }
-//   return o;
-// }
-//
-//   // dibuja un rectángulo rojo alrededor del gato
-//
-//
-// function drawRect(o, parent) {
-//   var rect = document.createElementNS(SVG_NS, 'rect');
-//   for (var name in o) {
-//     if (o.hasOwnProperty(name)) {
-//       rect.setAttributeNS(null, name, o[name]);
-//     }
-//   }
-//   console.log(parent, "     ", rect)
-//   var loko = parent.appendChild(rect);
-//   return loko;
-// }
-
-
-
-// function readCSV(name, country, year){
-//   d3.csv(name, function(data){
-//     dataQuantity = doSometringwithdata(data);
-//     limit = limit(dataQuantity)
-//   }) ;
-// }
-//
 
 
 
@@ -137,17 +109,33 @@ function letsee(){
 var country = "Inventado1";
 var year = 2010;
 var name = "datosPrueba.csv";
+var positionX = new Array(11);
+positionX [0] = 112;
+positionX [1] = 195;
+positionX [2] = 277;
+positionX [3] = 358;
+positionX [4] = 440;
+positionX [5] = 522;
+positionX [6] = 604;
+positionX [7] = 686;
+positionX [8] = 768;
+positionX [9] = 850;
+positionX [10] = 932;
+
 
 d3.csv(name, function(data){
   dataQuantity = doSometringwithdata(data, country, year);
   max = limit(dataQuantity);
   width = 1000;
   height = 1000;
-  drawAxes(width, height, max, dataQuantity)
+  var limite = drawAxes(width, height, max, dataQuantity)
 
   console.log('lokokokokokok', dataQuantity);
-  letsee()
-  // drawRect(createCubos(), 'svg');
+  for ( i = 0; i < 11; i++ ){
+    letsee(positionX[i], dataQuantity[i], limite - 1);
+  }
+
+
 }) ;
 
 
