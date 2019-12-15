@@ -21,7 +21,7 @@ function drawAxes(width, height, maxVal, dataQuantity){
 
     var xscale = d3.scalePoint()
         .domain(dataYears)
-        .range([0, width - 100])
+        .range([0, width/2])
 
   var yscale = d3.scalePoint()
           .domain(vectorValores)
@@ -89,17 +89,17 @@ function limit(data){
 function letsee(posX, valorY, numDiv){
 
   var bodySelection = d3.select("body").select("svg") ;
-  // var galego = bodySelection.select("g").select("g").class;
-   // var intermedia = bodySelection.select("g").select("g").getAttribute("transform");
-   // console.log(galego, "o te amo pequeno saltamonts :DDD ");
   var valY = (500.5 / numDiv) * (valorY / 10) ;
   console.log(valY, "    ", numDiv, "   ", valorY);
   var posY = 510.033 - valY //la referencia la hemos tomado tomando el valor de 20, por lo que las medidas seran sobre esa medida inicial
   var rectSection = bodySelection.append("rect")
                                   .attr("x", posX)
                                   .attr("y", posY) //perfecto <3 400 es la altura perfecta con 110 de longitud del rect, en caso de que aumente hay que reducir la y proporcionalmente.407,3934 NO CAMBIA ES LA ALTURA DE LAS BARRAS
-                                  .attr("width", 40) //este no cambia es el ancho
-                                  .attr("height", valY); //210  513.033/numero de divisiones 0-100 = 10 divisiones de 10 en 10, SI el valor es 20, pues (20/10) * valo obtenido.
+                                  .attr("width", 46.9) //este no cambia es el ancho
+                                  .attr("height", valY) //210  513.033/numero de divisiones 0-100 = 10 divisiones de 10 en 10, SI el valor es 20, pues (20/10) * valo obtenido.
+                                  .attr("fill", "grey")
+                                  .attr("stroke-width", 1)
+                                  .attr("stroke", "red"); 
 }
 
 
@@ -110,17 +110,17 @@ var country = "Inventado1";
 var year = 2010;
 var name = "datosPrueba.csv";
 var positionX = new Array(11);
-positionX [0] = 112;
-positionX [1] = 195;
-positionX [2] = 277;
-positionX [3] = 358;
-positionX [4] = 440;
-positionX [5] = 522;
-positionX [6] = 604;
-positionX [7] = 686;
-positionX [8] = 768;
-positionX [9] = 850;
-positionX [10] = 932;
+positionX [0] = 73.45; //+46.9 la mitad es 23.45
+positionX [1] = 120.35;
+positionX [2] = 167.25;
+positionX [3] = 214.15;
+positionX [4] = 261.05;
+positionX [5] = 307.95;
+positionX [6] = 354.85;
+positionX [7] = 401.75;
+positionX [8] = 448.65;
+positionX [9] = 495.55;
+positionX [10] = 542.45;
 
 
 d3.csv(name, function(data){
