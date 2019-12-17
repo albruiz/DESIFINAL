@@ -4,12 +4,131 @@
 //   }
 // })  ;
 
-//this fuction creates the axes
-function drawAxes(width, height, maxVal, minVal, dataQuantity){
-  var minVal = 0;
+let yearSlider = d3.select('#year-slider');
+yearSlider
+  .on('input', () => {
+    // We change the year on the panel
+    d3.select('#year-panel').text("Año " + yearSlider.node().value);
+    console.log('llklklklkl');
+    // Call re-draw
+     redrawPlease();
+  });
+
+d3.select('#region-select')
+  .on('input', () => {
+    console.log('manito klklklklkl')
+    redrawPlease();
+
+  });
+
+const vectorZonas = Array(22)
+vectorZonas[0] = 0
+vectorZonas[1] = 1
+vectorZonas[2] = 2
+vectorZonas[3] = 3
+vectorZonas[4] = 4
+vectorZonas[5] = 5
+vectorZonas[6] = 6
+vectorZonas[7] = 7
+vectorZonas[8] = 8
+vectorZonas[9] = 9
+vectorZonas[10] = 10
+vectorZonas[11] = 'WORLD'
+vectorZonas[12] = 'Africa'
+vectorZonas[13] = 'Asia'
+vectorZonas[14] = 'Europe'
+vectorZonas[15] = 'LatinAmericaAndtheCaribbean'
+vectorZonas[16] = 'NorthernAmerica'
+vectorZonas[17] = 'Oceania'
+vectorZonas[18] = 'EasternEurope'
+vectorZonas[19] = 'NorthernEurope'
+vectorZonas[20] = 'SouthernEurope'
+vectorZonas[21] = 'WesternEurope'
+
+
+const regionDivision = [{
+  name : "TOTAL MUNDIAL",
+  regions : [{
+      name : "WORLD",
+      code : 0
+    }]
+  },
+  {
+    name : "CONTINENTES",
+    regions :[{
+        name : "Africa",
+        code : 1
+      },
+      {
+        name : "Asia",
+        code : 2
+      },
+      {
+        name : "Europe",
+        code : 3
+      },
+      {
+        name : "Latin America And the Caribbean",
+        code : 4
+      },
+      {
+        name : "Northern America",
+        code : 5
+      },
+      {
+        name : "Oceania",
+        code : 6
+      }
+    ]
+  },
+  {
+    name : "EUROPE",
+    regions :[{
+        name : "Eastern Europe",
+        code : 7
+      },
+      {
+        name : "Northern Europe",
+        code : 8
+      },
+      {
+        name : "Southern Europe",
+        code : 9
+      },
+      {
+        name : "Western Europe",
+        code : 10
+      }
+    ]
+  }
+  ];
+
+function regionSelectReset() {
+  let regionSelect = document.getElementById("region-select");
+
+  regionDivision.forEach((group) => {
+    let optGroup = document.createElement('optgroup');
+    optGroup.setAttribute('label', group.name);
+    regionSelect.appendChild(optGroup);
+
+    group.regions.forEach((region) => {
+      let option = document.createElement('option');
+      option.textContent = region.name;
+      option.setAttribute('value', region.code);
+      optGroup.appendChild(option);
+    });
+  });
+}
+
+
+regionSelectReset();
+
+//this fuction creates the axes, parameters: width and height to create the SVG element, maxVal to create the divisions on the Y Axe
+//Returns an array with 2 values, the first is the number of division on Y Axe and the second one is the value that represents each division (these will be used later)
+function drawAxes(width, height, maxVal){
+
   var dataYears = [ "  ", "0-9", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79", "80-89", "90+"]
-  //condiciones para dibujar los ejes: si el maximo es mayor que 1.000.000, entonces se dividira el eje Y en rangos de 100.000 hasta el millon, se añadiran a mayores x todos los 100.000 que falten en el histograma
-  var vectorValores = Array (20) //20 es el tamano que tendra x defecto pero seguramente NO SEA EL final
+  var vectorValores = Array (20)
   variante = 0
   vectorValores[0] = 0
   if( maxVal > 700000){
@@ -36,36 +155,57 @@ function drawAxes(width, height, maxVal, minVal, dataQuantity){
   } else if (maxVal > 100000){
     for( i = 1; i < vectorValores.length; i++){
       if( maxVal > vectorValores[i-1]){
-        vectorValores[i] = vectorValores[i - 1] + 25000
+        vectorValores[i] = vectorValores[i - 1] + 20000
       }
     }
     variante = 25000
-  } else {
+  } else if (maxVal > 50000){
     for( i = 1; i < vectorValores.length; i++){
       if( maxVal > vectorValores[i-1]){
-        vectorValores[i] = vectorValores[i - 1] + 10000
+        vectorValores[i] = vectorValores[i - 1] + 5000
       }
     }
     variante = 10000
+  } else if (maxVal > 30000){
+    for( i = 1; i < vectorValores.length; i++){
+      if( maxVal > vectorValores[i-1]){
+        vectorValores[i] = vectorValores[i - 1] + 5000
+      }
+    }
+    variante = 2000
+  }else if (maxVal > 10000) {
+    for( i = 1; i < vectorValores.length; i++){
+      if( maxVal > vectorValores[i-1]){
+        vectorValores[i] = vectorValores[i - 1] + 2000
+      }
+    }
+    variante = 2000
+  } else {
+    for( i = 1; i < vectorValores.length; i++){
+      if( maxVal > vectorValores[i-1]){
+        vectorValores[i] = vectorValores[i - 1] + 500
+      }
+    }
+    variante = 500
   }
+
+
+
   vectorValores = vectorValores.filter(Boolean)
   vectorValores.splice(0,0,0)
-
   var limit = vectorValores.length
-
-// dataQuantity is set just for trying, but later, the data is needed to be taken from 'datos.csv'
   var svg = d3.select("body")
       .append("svg")
       .attr("width", width)
       .attr("height", height);
 
-    var xscale = d3.scalePoint()
+  var xscale = d3.scalePoint()
         .domain(dataYears)
         .range([0, width/2])
 
   var yscale = d3.scalePoint()
           .domain(vectorValores)
-          .range([height/2, 0]);
+          .range([height/2 + height/6, 0]);
 
   var x_axis = d3.axisBottom()
           .scale(xscale);
@@ -77,7 +217,7 @@ function drawAxes(width, height, maxVal, minVal, dataQuantity){
          .attr("transform", "translate(50, 10)")
          .call(y_axis);
 
-  var xAxisTranslate = height/2 + 10;
+  var xAxisTranslate = height/2 + height/6 + 10;
 
       svg.append("g")
               .attr("transform", "translate(50, " + xAxisTranslate  +")")
@@ -90,50 +230,48 @@ function drawAxes(width, height, maxVal, minVal, dataQuantity){
 }
 
 //returns Array with the data that needs to be represented
-function doSometringwithdata(coso, country, year){
+function doSometringwithdata(data, country, year){
   var vectorDatos = new Array(10);
-  for (i = 0; i < coso.length; i++){
-    if((coso[i].Country == country) && (coso[i].Year == year)){
-      vectorDatos[0] = parseInt(coso[i].Part0, 10);
-      vectorDatos[1] = parseInt(coso[i].Part1, 10);
-      vectorDatos[2] = parseInt(coso[i].Part2, 10);
-      vectorDatos[3] = parseInt(coso[i].Part3, 10);
-      vectorDatos[4] = parseInt(coso[i].Part4, 10);
-      vectorDatos[5] = parseInt(coso[i].Part5, 10);
-      vectorDatos[6] = parseInt(coso[i].Part6, 10);
-      vectorDatos[7] = parseInt(coso[i].Part7, 10);
-      vectorDatos[8] = parseInt(coso[i].Part8, 10);
-      vectorDatos[9] = parseInt(coso[i].Part9, 10);
+  for (i = 0; i < data.length; i++){
+    if((data[i].Country == country) && (data[i].Year == year)){
+      vectorDatos[0] = parseInt(data[i].Part0, 10);
+      vectorDatos[1] = parseInt(data[i].Part1, 10);
+      vectorDatos[2] = parseInt(data[i].Part2, 10);
+      vectorDatos[3] = parseInt(data[i].Part3, 10);
+      vectorDatos[4] = parseInt(data[i].Part4, 10);
+      vectorDatos[5] = parseInt(data[i].Part5, 10);
+      vectorDatos[6] = parseInt(data[i].Part6, 10);
+      vectorDatos[7] = parseInt(data[i].Part7, 10);
+      vectorDatos[8] = parseInt(data[i].Part8, 10);
+      vectorDatos[9] = parseInt(data[i].Part9, 10);
     }
   }
   return vectorDatos;
 }
 
-//Returns the maximun value of data (to make easier to represent the values it makes a number 10 splitter)
+//Returns the maximun value of data
 function limit(data){
   var maxValue = Math.max.apply(null, data);
-  if(maxValue % 10 != 0){
-    maxValue = maxValue + (10 - (maxValue % 10));
-  }
   return maxValue;
 }
 
-// <svg width="120" height="120"
-//      viewBox="0 0 120 120"
-//      xmlns="http://www.w3.org/2000/svg">
-//
-//   <rect x="10" y="10" width="100" height="100"/>
-// </svg>
+//Returns the minimum value of data
+function limitDown(data){
+  var minValue = Math.min.apply(null, data);
+  return minValue
+}
 
-//lo dibuja ahora toca darle el tamano esperado y hacer que cree todos los que tiene que crear la mierda esta
-//Function that creates the rect, paarameters posX, posY, rectHei, rectWid are the parameters you have to declare for an SVG rect.
-//posX, posY, rectHei, rectWid
-function letsee(posX, valorY, numDiv, variante){
 
+//Function that creates rect elements
+//Parameters : posX = this is the position the rect will be drawn, valorY : the number is needed to represent, numDiv : number of divisions in the Y Axe, variante : the value that divides the Y Axe
+function drawRect(posX, valorY, numDiv, variante){
   var bodySelection = d3.select("body").select("svg") ;
-  var valY = (500.5 / numDiv) * (valorY / variante) ;
+  var valY = (670.7 / numDiv) * (valorY / variante) ; //500.5
+  if (valY < 5){ //esto de aqui es asi para que sea representable en caso de querere respetar los ejes y no poder ver los valores mas pequenos es borrar esta senrtencia if incluyendo su interior
+    valY = 5
+  }
   console.log(valY, "    ", numDiv, "   ", valorY);
-  var posY = 510.033 - valY //la referencia la hemos tomado tomando el valor de 20, por lo que las medidas seran sobre esa medida inicial
+  var posY = 676.7 - valY //la referencia la hemos tomado tomando el valor de 20, por lo que las medidas seran sobre esa medida inicial 510.033
   var rectSection = bodySelection.append("rect")
                                   .attr("x", posX)
                                   .attr("y", posY) //perfecto <3 400 es la altura perfecta con 110 de longitud del rect, en caso de que aumente hay que reducir la y proporcionalmente.407,3934 NO CAMBIA ES LA ALTURA DE LAS BARRAS
@@ -145,12 +283,35 @@ function letsee(posX, valorY, numDiv, variante){
 }
 
 
+function redrawPlease(){
+   d3.select('svg').remove();
+  d3.csv(name, function(data){
+    var numeroPais = parseInt(document.getElementById('region-select').value);
+    var year = parseInt(document.getElementById('year-slider').value)
+    country = vectorZonas[numeroPais + 11]
+    //year = document.getElementById('year-slider').value;
+    dataQuantity = doSometringwithdata(data, country, year);
+    max = limit(dataQuantity);
+    min = limitDown(dataQuantity);
 
+
+    width = 1000;
+    height = 1000;
+    var limite = drawAxes(width, height, max)
+
+    for ( i = 0; i < positionX.length; i++ ){
+      drawRect(positionX[i], dataQuantity[i], limite[0] - 1, limite[1]);
+    }
+
+
+  }) ;
+
+}
 
 //ESTOS VALORES DEPENDERAN DE LO SELECCIONADO POR EL USUARIO,PARA PROBAR ESTOS VALDRAN
-var country = "Inventado2";
-var year = 2015;
-var name = "datosPrueba.csv";
+var country = "WORLD";
+var year = 1950;
+const name = "DatosPoblacion.csv";
 var positionX = new Array(10);
 positionX [0] = 78.14; //+46.9 la mitad es 23.45
 positionX [1] = 129.73; //51.59     25.795
@@ -167,54 +328,20 @@ positionX [9] = 542.45;
 d3.csv(name, function(data){
   dataQuantity = doSometringwithdata(data, country, year);
   max = limit(dataQuantity);
-  min = 15555555550
-  for ( i = 0; i< dataQuantity.length; i++){
-    if (dataQuantity[i] < min){
-      min = dataQuantity[i]
-    }
-  }
-  console.log(max, min);
+  min = limitDown(dataQuantity);
+
 
   width = 1000;
   height = 1000;
-  var limite = drawAxes(width, height, max, min, dataQuantity)
+  var limite = drawAxes(width, height, max)
 
-  console.log(limite)
   for ( i = 0; i < positionX.length; i++ ){
-    letsee(positionX[i], dataQuantity[i], limite[0] - 1, limite[1]);
+    drawRect(positionX[i], dataQuantity[i], limite[0] - 1, limite[1]);
   }
-
-
 }) ;
 
-
-
-
-
-
-
-
-// console.log(coso, 'loke');
-// var dataQuantity = readCSV(name, country, year);
-//
-//
-// console.log(coso, "kllklkl", dataQuantity);
-//
-//
-// var aux = 0;
-// console.log(dataQuantity + "   " + typeof(aux)+ "   " + typeof(dataQuantity[0]));
-// for (i = 0; i < dataQuantity.length; i++){
-//   console.log("aki entro  "+ dataQuantity[i]);
-//   if (dataQuantity[i] > aux){
-//     console.log("Es mayor" + aux + dataQuantity[i]);
-//     aux = dataQuantity[i]
-//   }
-// }
-// console.log(aux +" KKLK MI GENTE FUERTE");
-// drawAxes();
-// console.log(dataQuantity + "   " +'viva la mierda esta');
-
-
-  function drawGraphs(){
-
-  }
+var anyos = new Array(5)
+anyos[0] = 1950
+for (i = 1; i< anyos.length; i++){
+  anyos[i] = anyos[i-1] + 5
+}
