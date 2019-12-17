@@ -1,0 +1,62 @@
+/**
+ * Diseño y Evaluación de Sistemas Interactivos.
+ * Visualización de la población mundial.
+ *
+ * Héctor Sáenz Niño
+ */
+
+:root {
+  --control-width: 340px;
+}
+
+#year-panel {
+  margin-top: -10px;
+  padding-top: 0;
+  text-align: center;
+  width: var(--control-width);
+}
+
+#year-slider {
+  width: var(--control-width);
+}
+
+
+#title {
+  width: 960px;
+  text-align: center;
+  padding-bottom: 0;
+  margin-bottom: 0;
+  font-size: 24px;
+}
+
+#controls {
+  clear: both;
+  width: 960px;
+  display: flex;
+  justify-content: center;
+}
+
+#right-controls,
+#left-controls {
+  width: var(--control-width);
+  margin: 10px;
+  clear: both;
+}
+
+#right-controls {
+  float: left;
+}
+
+select {
+  margin-bottom: 1em;
+  padding: .25em;
+  border: 0;
+  background-color: #f8ffd0;
+  font-size: 1rem;
+  outline: 0;
+}
+
+/* option,
+optgroup {
+  background-color: white;
+} */
