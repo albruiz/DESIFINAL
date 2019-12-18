@@ -123,12 +123,21 @@ function regionSelectReset() {
 
 regionSelectReset();
 
+
+
+
+
+
+
+
+
+
 //this fuction creates the axes, parameters: width and height to create the SVG element, maxVal to create the divisions on the Y Axe
 //Returns an array with 2 values, the first is the number of division on Y Axe and the second one is the value that represents each division (these will be used later)
 function drawAxes(width, height, maxVal){
 
   var dataYears = [ "  ", "0-9", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79", "80-89", "90+"]
-  var vectorValores = Array (20)
+  var vectorValores = Array (40)
   variante = 0
   vectorValores[0] = 0
   if( maxVal > 700000){
@@ -158,18 +167,19 @@ function drawAxes(width, height, maxVal){
         vectorValores[i] = vectorValores[i - 1] + 20000
       }
     }
-    variante = 25000
+    variante = 20000
   } else if (maxVal > 50000){
     for( i = 1; i < vectorValores.length; i++){
       if( maxVal > vectorValores[i-1]){
+        console.log(maxVal,vectorValores,'hello');
         vectorValores[i] = vectorValores[i - 1] + 5000
       }
     }
-    variante = 10000
+    variante = 5000
   } else if (maxVal > 30000){
     for( i = 1; i < vectorValores.length; i++){
       if( maxVal > vectorValores[i-1]){
-        vectorValores[i] = vectorValores[i - 1] + 5000
+        vectorValores[i] = vectorValores[i - 1] + 2000
       }
     }
     variante = 2000
@@ -190,14 +200,16 @@ function drawAxes(width, height, maxVal){
   }
 
 
-
+  console.log(vectorValores, maxVal);
   vectorValores = vectorValores.filter(Boolean)
   vectorValores.splice(0,0,0)
+  console.log(vectorValores);
   var limit = vectorValores.length
   var svg = d3.select("body")
       .append("svg")
       .attr("width", width)
-      .attr("height", height);
+      .attr("height", height)
+      .attr("style", "position: absolute; top: 8px; left: 300px");
 
   var xscale = d3.scalePoint()
         .domain(dataYears)
@@ -205,7 +217,7 @@ function drawAxes(width, height, maxVal){
 
   var yscale = d3.scalePoint()
           .domain(vectorValores)
-          .range([height/2 + height/6, 0]);
+          .range([height/2 + height/24, 0]);
 
   var x_axis = d3.axisBottom()
           .scale(xscale);
@@ -217,11 +229,38 @@ function drawAxes(width, height, maxVal){
          .attr("transform", "translate(50, 10)")
          .call(y_axis);
 
-  var xAxisTranslate = height/2 + height/6 + 10;
+  var xAxisTranslate = height/2 + height/24 + 10;
 
       svg.append("g")
               .attr("transform", "translate(50, " + xAxisTranslate  +")")
               .call(x_axis)
+
+  var svg = d3.select("body")
+      .append("svg")
+      .attr("width", 300)
+      .attr("height", 300)
+      .attr("style", "position: absolute; top: 100px; left: 90px")
+      .attr("transform", "rotate(-90)")
+      .append("text")
+        .attr("x", 25)
+        .attr("y", 200)
+        .attr("font-family", "Verdana")
+        .attr("font-size", 25)
+        .text("Miles de Personas");
+
+  var svg = d3.select("body")
+  .append("svg")
+  .attr("width",400)
+  .attr("height", 100)
+  .attr("style", "position: absolute; top: 560px; left: 400px")
+  .append("text")
+    .attr("x", 100)
+    .attr("y", 80)
+    .attr("font-family", "Verdana")
+    .attr("font-size", 25)
+    .text("Rango de Edad");
+
+
 
   var listaSol = new Array(2)
   listaSol[0] = limit
@@ -266,12 +305,12 @@ function limitDown(data){
 //Parameters : posX = this is the position the rect will be drawn, valorY : the number is needed to represent, numDiv : number of divisions in the Y Axe, variante : the value that divides the Y Axe
 function drawRect(posX, valorY, numDiv, variante){
   var bodySelection = d3.select("body").select("svg") ;
-  var valY = (670.7 / numDiv) * (valorY / variante) ; //500.5
+  var valY = (554.227 / numDiv) * (valorY / variante) ; //500.5
   if (valY < 5){ //esto de aqui es asi para que sea representable en caso de querere respetar los ejes y no poder ver los valores mas pequenos es borrar esta senrtencia if incluyendo su interior
     valY = 5
   }
   console.log(valY, "    ", numDiv, "   ", valorY);
-  var posY = 676.7 - valY //la referencia la hemos tomado tomando el valor de 20, por lo que las medidas seran sobre esa medida inicial 510.033
+  var posY = 551.7 - valY //la referencia la hemos tomado tomando el valor de 20, por lo que las medidas seran sobre esa medida inicial 510.033
   var rectSection = bodySelection.append("rect")
                                   .attr("x", posX)
                                   .attr("y", posY) //perfecto <3 400 es la altura perfecta con 110 de longitud del rect, en caso de que aumente hay que reducir la y proporcionalmente.407,3934 NO CAMBIA ES LA ALTURA DE LAS BARRAS
@@ -284,7 +323,7 @@ function drawRect(posX, valorY, numDiv, variante){
 
 
 function redrawPlease(){
-   d3.select('svg').remove();
+   d3.selectAll('svg').remove();
   d3.csv(name, function(data){
     var numeroPais = parseInt(document.getElementById('region-select').value);
     var year = parseInt(document.getElementById('year-slider').value)
