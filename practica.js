@@ -1,22 +1,14 @@
-// d3.csv("datosPrueba.csv", function(data) {
-//   for  (i=0;i<data.length;i++){
-//     console.log(data[i].Index +" "+data[i].Country +" "+data[i].CountryCode +" "+data[i].Year +" "+data[i].Part1 +" "+data[i].Part2 +" "+data[i].Part3 +" "+data[i].Part4 );
-//   }
-// })  ;
+const dataYears = [ "  ", "0-9", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79", "80-89", "90+"]
 
 let yearSlider = d3.select('#year-slider');
 yearSlider
   .on('input', () => {
-    // We change the year on the panel
     d3.select('#year-panel').text("Año " + yearSlider.node().value);
-    console.log('llklklklkl');
-    // Call re-draw
      redrawPlease();
   });
 
 d3.select('#region-select')
   .on('input', () => {
-    console.log('manito klklklklkl')
     redrawPlease();
 
   });
@@ -123,20 +115,10 @@ function regionSelectReset() {
 
 regionSelectReset();
 
-
-
-
-
-
-
-
-
-
 //this fuction creates the axes, parameters: width and height to create the SVG element, maxVal to create the divisions on the Y Axe
 //Returns an array with 2 values, the first is the number of division on Y Axe and the second one is the value that represents each division (these will be used later)
 function drawAxes(width, height, maxVal){
 
-  var dataYears = [ "  ", "0-9", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79", "80-89", "90+"]
   var vectorValores = Array (40)
   variante = 0
   vectorValores[0] = 0
@@ -171,7 +153,6 @@ function drawAxes(width, height, maxVal){
   } else if (maxVal > 50000){
     for( i = 1; i < vectorValores.length; i++){
       if( maxVal > vectorValores[i-1]){
-        console.log(maxVal,vectorValores,'hello');
         vectorValores[i] = vectorValores[i - 1] + 5000
       }
     }
@@ -200,16 +181,16 @@ function drawAxes(width, height, maxVal){
   }
 
 
-  console.log(vectorValores, maxVal);
   vectorValores = vectorValores.filter(Boolean)
   vectorValores.splice(0,0,0)
-  console.log(vectorValores);
   var limit = vectorValores.length
   var svg = d3.select("body")
       .append("svg")
+      .attr("id", "diagrama")
+      .attr("class", "removable")
       .attr("width", width)
       .attr("height", height)
-      .attr("style", "position: absolute; top: 8px; left: 300px");
+      .attr("style", "position: absolute; top: 80px; left: 300px");
 
   var xscale = d3.scalePoint()
         .domain(dataYears)
@@ -235,30 +216,59 @@ function drawAxes(width, height, maxVal){
               .attr("transform", "translate(50, " + xAxisTranslate  +")")
               .call(x_axis)
 
+
+
+    var svg = d3.select("body")
+    .append("svg")
+    .attr("id", "fondo")
+    .attr("width", 450)
+    .attr("height", 110)
+    .attr("style", "position: absolute; top: 250px; left: 1000px")
+    .append("rect")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", 450)
+      .attr("height", 110)
+      .attr("fill", "#c6bcbc")
+      .attr("stroke-width", 1)
+      .attr("stroke", "black");
+
+  var svg = d3.select("body")
+  .append("svg")
+  .attr("width", 500)
+  .attr("height", 100)
+  .attr("style", "position: absolute; top: 0px; left: 500px")
+  .append("text")
+    .attr("x", 0)
+    .attr("y", 50)
+    .attr("font-family", "Verdana")
+    .attr("font-size", 25)
+    .text("WORLD POPULATION DENSITY");
+
   var svg = d3.select("body")
       .append("svg")
       .attr("width", 300)
       .attr("height", 300)
-      .attr("style", "position: absolute; top: 100px; left: 90px")
+      .attr("style", "position: absolute; top: 180px; left: 90px")
       .attr("transform", "rotate(-90)")
       .append("text")
         .attr("x", 25)
         .attr("y", 200)
         .attr("font-family", "Verdana")
         .attr("font-size", 25)
-        .text("Miles de Personas");
+        .text("Thousands of People");
 
   var svg = d3.select("body")
   .append("svg")
   .attr("width",400)
   .attr("height", 100)
-  .attr("style", "position: absolute; top: 560px; left: 400px")
+  .attr("style", "position: absolute; top: 600px; left: 400px")
   .append("text")
     .attr("x", 100)
     .attr("y", 80)
     .attr("font-family", "Verdana")
     .attr("font-size", 25)
-    .text("Rango de Edad");
+    .text("Age range");
 
 
 
@@ -300,30 +310,52 @@ function limitDown(data){
   return minValue
 }
 
-
 //Function that creates rect elements
 //Parameters : posX = this is the position the rect will be drawn, valorY : the number is needed to represent, numDiv : number of divisions in the Y Axe, variante : the value that divides the Y Axe
-function drawRect(posX, valorY, numDiv, variante){
-  var bodySelection = d3.select("body").select("svg") ;
-  var valY = (554.227 / numDiv) * (valorY / variante) ; //500.5
-  if (valY < 5){ //esto de aqui es asi para que sea representable en caso de querere respetar los ejes y no poder ver los valores mas pequenos es borrar esta senrtencia if incluyendo su interior
+function drawRect(posX, valorY, numDiv, variante, i){
+
+  var bodySelection = d3.select("body").select("#diagrama") ;
+  var valY = (554.227 / numDiv) * (valorY / variante) ;
+  if (valY < 5){
     valY = 5
   }
-  console.log(valY, "    ", numDiv, "   ", valorY);
-  var posY = 551.7 - valY //la referencia la hemos tomado tomando el valor de 20, por lo que las medidas seran sobre esa medida inicial 510.033
+  var posY = 551.7 - valY
   var rectSection = bodySelection.append("rect")
+                                  .attr("class", "grafo")
                                   .attr("x", posX)
-                                  .attr("y", posY) //perfecto <3 400 es la altura perfecta con 110 de longitud del rect, en caso de que aumente hay que reducir la y proporcionalmente.407,3934 NO CAMBIA ES LA ALTURA DE LAS BARRAS
-                                  .attr("width", 51.59) //este no cambia es el ancho
-                                  .attr("height", valY) //210  513.033/numero de divisiones 0-100 = 10 divisiones de 10 en 10, SI el valor es 20, pues (20/10) * valo obtenido.
-                                  .attr("fill", "grey")
+                                  .attr("y", posY)
+                                  .attr("width", 51.59)
+                                  .attr("height", valY)
+                                  .attr("fill", "#cee75d")
                                   .attr("stroke-width", 1)
-                                  .attr("stroke", "red");
+                                  .attr("stroke", "red")
+                                  .on("mouseover", function(){
+                                    drawAnimation(valorY, i)
+                                  })
+                                  .on("mouseout", function(){
+                                    var coso = d3.select('#tooltip')
+                                    coso.style("opacity", 0)
+                                    coso.remove();
+                                  });
+}
+
+
+function drawAnimation(valorY, i){//coutry es una variable global
+  var tooltip = d3.select('body').append('div')
+            .attr("id", "tooltip")
+            .style("background", "lightblue");
+          tooltip.html("<strong>Country: " + country + "</strong><br><strong>Age: </strong>" + dataYears[i+1] + " years<br><strong>Total Population: </strong>" + valorY +"000")
+            .raise()
+            .style("opacity", .9)
+            .style("position", "absolute")
+            .style("text-align", "center")
+            .style("left", `${d3.event.pageX}px`)
+            .style("top", `${d3.event.pageY + 10}px`);
 }
 
 
 function redrawPlease(){
-   d3.selectAll('svg').remove();
+   d3.selectAll('.removable').remove();
   d3.csv(name, function(data){
     var numeroPais = parseInt(document.getElementById('region-select').value);
     var year = parseInt(document.getElementById('year-slider').value)
@@ -339,7 +371,7 @@ function redrawPlease(){
     var limite = drawAxes(width, height, max)
 
     for ( i = 0; i < positionX.length; i++ ){
-      drawRect(positionX[i], dataQuantity[i], limite[0] - 1, limite[1]);
+      drawRect(positionX[i], dataQuantity[i], limite[0] - 1, limite[1], i);
     }
 
 
@@ -352,8 +384,8 @@ var country = "WORLD";
 var year = 1950;
 const name = "DatosPoblacion.csv";
 var positionX = new Array(10);
-positionX [0] = 78.14; //+46.9 la mitad es 23.45
-positionX [1] = 129.73; //51.59     25.795
+positionX [0] = 78.14;
+positionX [1] = 129.73;
 positionX [2] = 181.32;
 positionX [3] = 232.91;
 positionX [4] = 284.5;
@@ -375,7 +407,7 @@ d3.csv(name, function(data){
   var limite = drawAxes(width, height, max)
 
   for ( i = 0; i < positionX.length; i++ ){
-    drawRect(positionX[i], dataQuantity[i], limite[0] - 1, limite[1]);
+    drawRect(positionX[i], dataQuantity[i], limite[0] - 1, limite[1],i);
   }
 }) ;
 
