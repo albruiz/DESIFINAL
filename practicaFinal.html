@@ -2,14 +2,38 @@
 <html lang="en" dir="ltr">
   <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
 
     <meta charset="utf-8">
     <title>PrácticaFinal DESI</title>
+    <meta name="author" content="Alberto Ruiz Andres">
   </head>
   <body>
-    <script type="text/javascript" src="practica.js">
-    </script>
+
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+<!-- border-width="1px" stroke-color="red" -->
+<div id = 'controles'   style="font-family:verdana ; position: relative; top: 250px; left: 1000px; z-index:1" >
+
+  <div id ='controlIzquierda'>
+    <span class="panel-tag">Región: </span>
+    <select id = "region-select" ></select>
+  </div>
+
+  <div id="right-controls">
+    <div id="year">
+      <div id="year-controls">
+        <label> Elige un año:
+        <input id="year-slider" type="range" min="1950"  max="2020" step="5" value="1950" > </label>
+      </div>
+      <h2 id="year-panel">Año 1950</h2>
+    </div>
+  </div>
+</div>
+
+  <script type = "text/javascript" src="practica.js">
+  </script>
+<!-- <link href = "style.css"> -->
+
 
   </body>
 </html>
