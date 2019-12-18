@@ -315,7 +315,7 @@ function limitDown(data){
 function drawRect(posX, valorY, numDiv, variante, i){
 
   var bodySelection = d3.select("body").select("#diagrama") ;
-  var valY = (554.227 / numDiv) * (valorY / variante) ;
+  var valY = (545.717 / numDiv) * (valorY / variante) ;
   if (valY < 5){
     valY = 5
   }
